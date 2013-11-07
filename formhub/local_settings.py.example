@@ -1,3 +1,11 @@
+### This file is now obsolete.....
+#
+# This project has been converted to structured settings
+#
+# refer to ./preset/example_sqlite.py
+#
+# move the things which were in your local_settings.py to ./preset
+
 # postgres
 DATABASES = {
     'default': {
@@ -19,4 +27,5 @@ MONGO_DATABASE = {
     'USER': '',
     'PASSWORD': ''
 }
+
 
