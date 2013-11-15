@@ -26,8 +26,8 @@ xlwt==0.7.5
 openpyxl==1.7.0
 celery==3.0.23
 django-celery==3.0.23
--e git+https://github.com/jbalogh/django-nose.git#egg=django-nose
-# django-nose
+# -e git+https://github.com/jbalogh/django-nose.git#egg=django-nose
+django-nose
 python-digest==1.7
 django-digest==1.13
 # sql alchemy was used for importing data from phones
