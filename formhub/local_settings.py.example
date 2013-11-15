@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+=======
+### This file is now obsolete.....
+#
+# This project has been converted to structured settings
+#
+# refer to ./preset/example_sqlite.py
+#
+# move the things which were in your local_settings.py to ./preset
+
+>>>>>>> origin/master
 # postgres
 DATABASES = {
     'default': {
@@ -20,4 +31,5 @@ MONGO_DATABASE = {
     'PASSWORD': ''
 }
 
+# Make a unique unique key just for testing, and don't share it with anybody.
 SECRET_KEY = 'putSomethingSecretHere'
