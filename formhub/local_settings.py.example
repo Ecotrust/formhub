@@ -20,3 +20,4 @@ MONGO_DATABASE = {
     'PASSWORD': ''
 }
 
+SECRET_KEY = 'putSomethingSecretHere'

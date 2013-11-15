@@ -8,8 +8,10 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404
 
+from guardian.shortcuts import get_perms_for_model, assign_perm
 from main.models import UserProfile
 from odk_logger.models import XForm
+from api.models import Project, Team, OrganizationProfile
 
 
 class HttpResponseNotAuthorized(HttpResponse):
@@ -38,15 +40,15 @@ def set_profile_data(context, content_user):
     context.profile, created = UserProfile.objects\
         .get_or_create(user=content_user)
     context.location = ""
-    if content_user.profile.city:
-        context.location = content_user.profile.city
-    if content_user.profile.country:
-        if content_user.profile.city:
+    if context.profile.city:
+        context.location = context.profile.city
+    if context.profile.country:
+        if context.profile.city:
             context.location += ", "
-        context.location += content_user.profile.country
-    context.forms = content_user.xforms.filter(shared__exact=1)\
-        .order_by('-date_created')
-    context.num_forms = len(context.forms)
+        context.location += context.profile.country
+    context.forms = content_user.xforms.filter(shared__exact=1)
+    context.num_forms = context.forms.count()
+    context.user_surveys = context.profile.num_of_submissions
     context.home_page = context.profile.home_page
     if context.home_page and re.match("http", context.home_page) is None:
         context.home_page = "http://%s" % context.home_page
@@ -85,7 +87,7 @@ def check_and_set_form_by_id(pk, request):
 def get_xform_and_perms(username, id_string, request):
     xform = get_object_or_404(
         XForm, user__username=username, id_string=id_string)
-    is_owner = username == request.user.username
+    is_owner = xform.user == request.user
     can_edit = is_owner or\
         request.user.has_perm('odk_logger.change_xform', xform)
     can_view = can_edit or\
@@ -133,3 +135,11 @@ def add_cors_headers(response):
                                                 ' Authorization')
     response['Content-Type'] = 'application/json'
     return response
+
+
+def set_api_permissions_for_user(user):
+    models = [UserProfile, XForm, Project, Team, OrganizationProfile]
+    for model in models:
+        for perm in get_perms_for_model(model):
+            assign_perm(
+                '%s.%s' % (perm.content_type.app_label, perm.codename), user)
