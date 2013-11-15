@@ -64,6 +64,7 @@ reportlab
 pyPdf
 xlutils
 xhtml2pdf
+psycopg2
 
 # tagging
 django-taggit
