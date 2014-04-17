@@ -241,7 +241,13 @@ def generate_frp_xls(id_string, biol_date, user, permit_nums):
         raise Exception("Only one permit number per FRP export")
 
     pis = [x for x in all_instances 
-        if x.to_dict()[settings.FIELD_MAP['permit_num']] in permit_nums and x.to_dict().has_key(settings.SHOW_FRP_KEY) and  x.to_dict()[settings.SHOW_FRP_KEY] == 'TRUE']
+        if x.to_dict()[settings.FIELD_MAP['permit_num']] in permit_nums 
+        and (
+            (x.to_dict().has_key(settings.SHOW_FRP_KEY) and  x.to_dict()[settings.SHOW_FRP_KEY] == 'TRUE') 
+            or #support old survey forms that don't have this
+            (not x.to_dict().has_key(settings.SHOW_FRP_KEY) )
+        )
+    ]
 
     if len(pis) == 0:
         raise Http404
