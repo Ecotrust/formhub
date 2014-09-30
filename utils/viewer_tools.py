@@ -191,9 +191,17 @@ def enketo_url(form_url, id_string, instance_xml=None,
         try:
             response = req.json()
         except ValueError:
+            logfile = open('/tmp/openrosa_log.txt', 'a+')
+            logfile.write('\nURL: %s\n' % url)
+            logfile.write('%s\n' % req.content)
+            logfile.close();
             pass
         else:
             if 'message' in response:
+                logfile = open('/tmp/openrosa_log.txt', 'a+')
+                logfile.write('\nURL: %s\n' % url)
+                logfile.write('%s\n' % req.content)
+                logfile.close();
                 raise Exception(response['message'])
     return False
 
