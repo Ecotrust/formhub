@@ -422,6 +422,63 @@ PHOTO_KEY = 'general/pics'
 COMMENT_KEY = 'awc/awc_comm'
 
 ################################################################################
+# Yukon Logbook specific settings
+
+YUKON_WATER_SURVEY = "yukon_water"
+YUKON_FIELD_MAP = {
+    'site_id': "general/site_id",
+    'obs_name': "general/tech_name",
+    'date': "general/date",
+    'start_time': 'general/st_time',
+    'water_body': 'general/wtr_bdy',
+    'meter_type': 'general/meter',
+    'meter_id': 'general/meter_id',
+    'ph7_buffer': 'ph_calibration/ph7_buffer',
+    'ph7_buffer_temp': 'ph_calibration/ph7_buffer_tmp',
+    'ph10_buffer': 'ph_calibration/ph10_buffer',
+    'ph10_buffer_temp': 'ph_calibration/ph10_buffer_tmp',
+    'bar_pressure': 'do_calibration/bar_pressure',
+    'pressure_hg': 'do_calibration/us_note',
+    'pressure_kpa': 'do_calibration/ca_note',
+    'pct_do_saturation': 'do_calibration/do_reading_stat',
+    'do_reading': 'do_calibration/do_reading',
+    'conductivity_standard': 'con_calibration/con_standard',
+    'conductivity_reading': 'con_calibration/con_read',
+    'conductivity_soln_temp': 'con_calibration/con_temp',
+    'ph': 'field/ph',
+    'dissolved_o_pct': 'field/dssvld_o_perc',
+    'dissolved_oxygen': 'field/dssvld_o',
+    'conductivity': 'field/conduct',
+    'air_temp': 'field/air_temp',
+    'water_temp': 'field/wtr_temp',
+    'ice_thickness': 'field/ice',
+    'coordinates': 'field/gps_loc',
+    'include_oth_obs': 'field_cond/show_field',
+    'current_weather': 'field_cond/weather_current',
+    'weather_last_24hrs': 'field_cond/weather_24',
+    'sample_location': 'field_cond/sample_loc',
+    'flow_description': 'field_cond/flow_desc',
+    'water_clarity': 'field_cond/wtr_clrty',
+    'odor': 'field_cond/odor',
+    'odor_oth_description': 'field_cond/odor_other',
+    'river_other': 'field_cond/riv_other_info',
+    'river_change': 'field_cond/riv_change',
+    'river_height_2weeks': 'field_cond/riv_hght_2w',
+    'river_height_1year': 'field_cond/riv_height_lyear',
+    'weather_notes': 'field_cond/weather_note',
+    'wildlife_concern': 'field_cond/wildlife_concern',
+    'wildlife_note': 'field_cond/wildlife_note',
+    'contaminate_events': 'field_cond/contaminants1',
+    'other_site_req': 'field_cond/contaminants2',
+    'interesting_notes': 'field_cond/other_info1',
+    'sample_issues': 'field_cond/other_info2'
+}
+
+YUKON_IGNORED_OUTPUT_FIELDS = []
+
+YUKON_LOCATION_KEY = 'field/gps_loc'
+
+################################################################################
 
 try:
     from local_settings import *

@@ -106,6 +106,7 @@ urlpatterns = patterns('',
     # Logbook specific views
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/awc\.pdf$", 'logbook.views.awc_pdf_export'),
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/frp\.xls$", 'logbook.views.frp_xls_export'),
+    url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/yukon\.xls$", 'logbook.views.yukon_xls_export'),
 
     url(r"^(?P<username>\w+)/forms/(?P<id_string>[^/]+)/gdocs$", 'odk_viewer.views.google_xls_export'),
     url(r"^odk_viewer/survey/(?P<instance_id>\d+)/$", 'odk_viewer.views.survey_responses'),

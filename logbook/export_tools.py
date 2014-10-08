@@ -60,22 +60,35 @@ def extend_meta_profile(meta, user):
     meta['phone'] = profile.phonenumber
     return meta
 
-def get_obs_data(pi):
+def get_obs_data(pi, survey):
     data = {
       'lat': pi.lat,
       'lng': pi.lng,
     }
 
-    for key in settings.FIELD_MAP.keys():
-        data[key] = pi.to_dict().get(settings.FIELD_MAP[key], '')
+    if survey == 'ak':
+        for key in settings.FIELD_MAP.keys():
+            data[key] = pi.to_dict().get(settings.FIELD_MAP[key], '')
 
-    pi_dict = pi.to_dict()
-    for key in sorted(pi_dict.keys()):
-        if key == settings.FRP_LOCATION_KEY:
-            val = pi_dict[key]
-            val_lst = val.split()
-            data['lat'] = float(val_lst[0])
-            data['lng'] = float(val_lst[1])
+        pi_dict = pi.to_dict()
+        for key in sorted(pi_dict.keys()):
+            if key == settings.FRP_LOCATION_KEY:
+                val = pi_dict[key]
+                val_lst = val.split()
+                data['lat'] = float(val_lst[0])
+                data['lng'] = float(val_lst[1])
+
+    elif survey == 'yukon':
+        for key in settings.YUKON_FIELD_MAP.keys():
+            data[key] = pi.to_dict().get(settings.YUKON_FIELD_MAP[key], '')
+
+        pi_dict = pi.to_dict()
+        for key in sorted(pi_dict.keys()):
+            if key == settings.YUKON_LOCATION_KEY:
+                val = pi_dict[key]
+                val_lst = val.split()
+                data['lat'] = float(val_lst[0])
+                data['lng'] = float(val_lst[1])
 
     return data
 
@@ -94,12 +107,12 @@ def generate_pdf(id_string, submission_type, observations, user, permit_nums):
     if len(pis) == 0:
         raise Http404
 
-    obs_data = [ get_obs_data(pi) for pi in pis ]
+    obs_data = [ get_obs_data(pi, 'ak') for pi in pis ]
 
     pts = [(x['lng'], x['lat']) for x in obs_data]
-    awc_nums = [x['awc_num'] for x in obs_data if x['awc_num']]
+    awc_nums = [x['awc_num'] for x in obs_data if x.has_key('awc_num')]
     awc_num = str(awc_nums[0])       # Nominations should only be for one waterway at a time.
-    waterways = [x['waterway'] for x in obs_data if x['waterway']]
+    waterways = [x['waterway'] for x in obs_data if x.has_key('waterway')]
     waterway = str(waterways[0])     # Nominations should only be for one waterway at a time.
     name_type = obs_data[0]['name_type']
 
@@ -252,7 +265,7 @@ def generate_frp_xls(id_string, biol_date, user, permit_nums):
     if len(pis) == 0:
         raise Http404
 
-    obs_data = [ get_obs_data(pi) for pi in pis ]
+    obs_data = [ get_obs_data(pi, 'ak') for pi in pis ]
 
     pts = [(x['lng'], x['lat']) for x in obs_data]
 
@@ -313,6 +326,63 @@ def generate_frp_xls(id_string, biol_date, user, permit_nums):
     content.close()
     return final
 
+
+def generate_yukon_xls(id_string, req_date, user, site_nums):
+    from odk_viewer.models import ParsedInstance
+    import xlrd
+    from xlutils.copy import copy
+
+    all_instances = ParsedInstance.objects.filter(instance__user=user,
+                                        instance__xform__id_string=id_string, instance__deleted_at=None)
+
+    # We should probably use the ORM filter for better performance but
+    # I havent yet figured out how to query mongodb via ORM args
+    if len(site_nums) > 1:
+        raise Exception("Only one site id per Yukon water survey export")
+
+    pis = [x for x in all_instances 
+        if x.to_dict()[settings.YUKON_FIELD_MAP['site_id']] in site_nums
+    ]
+
+    if len(pis) == 0:
+        raise Http404
+
+    obs_data = [ get_obs_data(pi, 'yukon') for pi in pis ]
+
+    pts = [(x['lng'], x['lat']) for x in obs_data]
+
+    meta = {
+        'request_date': req_date
+    }
+
+    meta = extend_meta_profile(meta, user)
+
+    content = StringIO.StringIO()
+
+    # read your existing XLS
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                        "yukon_original.xls")
+    orig_book = xlrd.open_workbook(file_path, formatting_info=True)
+    wb = copy(orig_book)
+    ws = wb.get_sheet(0)
+    start_row_idx = 4
+
+    ws.write(0, 0, "Site ID: %s" % obs_data[0]['site_id'])
+
+    # Documentations showed some degree of finickiness with date formats. The preferred format is now enforced.
+    request_date = meta['request_date'].split('-')
+    ws.write(2, 0, "This data was requested on: %s/%s/%s" % (request_date[1], request_date[2], request_date[0]))
+    for i, obs in enumerate(obs_data):
+        for j, header in enumerate(settings.YUKON_FIELD_MAP.keys()):
+            if i == 0:
+                ws.write(3,j,header)
+            ws.write(start_row_idx+i,j,obs[header])
+        
+    wb.save(content)
+
+    final = content.getvalue() 
+    content.close()
+    return final
 
 def get_obs_pdf(pi, username):
 

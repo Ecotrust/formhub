@@ -7,7 +7,7 @@ from django.http import HttpResponseForbidden, HttpResponse, \
 from utils.logger_tools import disposition_ext_and_date
 from odk_logger.models import XForm
 from utils.user_auth import has_permission, helper_auth_helper
-from logbook.export_tools import generate_pdf, generate_frp_xls
+from logbook.export_tools import generate_pdf, generate_frp_xls, generate_yukon_xls
 
 
 def awc_pdf_export(request, username, id_string):
@@ -54,4 +54,23 @@ def frp_xls_export(request, username, id_string):
     response = HttpResponse(pdf, mimetype="application/vnd.ms-excel")
     response['Content-Disposition'] = disposition_ext_and_date(
         '-'.join(permit_nums), 'xls')
+    return response
+
+def yukon_xls_export(request, username, id_string):
+    owner = get_object_or_404(User, username=username)
+    xform = get_object_or_404(XForm, id_string=id_string, user=owner)
+    helper_auth_helper(request)
+    if not has_permission(xform, owner, request):
+        return HttpResponseForbidden(_(u'Not shared.'))
+
+    site_nums = request.GET.getlist('site')
+    req_date = request.GET.get('dlRequestDate', '')
+    if len(site_nums) != 1:
+        return HttpResponseBadRequest("Must provide a single site id")
+
+    xls = generate_yukon_xls(id_string, req_date,
+        user=owner, site_nums=site_nums)
+    response = HttpResponse(xls, mimetype="application/vnd.ms-excel")
+    response['Content-Disposition'] = disposition_ext_and_date(
+        '-'.join(site_nums), 'xls')
     return response
