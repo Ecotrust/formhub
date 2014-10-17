@@ -26,7 +26,46 @@
 				</div>
 	       	-->
 			</div>
-			<div class = "span12" id = "topbar_login"> <a href="{% url "auth_login" %}" class="btn btn-info pull-right" id="login_btn">{%  trans "Log In" %}</a> </div>
+			<div class = "span12" id = "topbar_login"> 
+				<a href="{% url "auth_login" %}" class="btn btn-info pull-right" id="login_btn">{%  trans "Log In" %}</a> 
+				<a href="#registerModal" role="button" class="btn btn-success pull-right" data-toggle="modal" id="register_btn">{%  trans "Register" %}</a> </div>
 		</div> <!-- Span 12 -->
 	</div> <!-- row fluid -->
+</div>
+
+<div class="modal hide fade" id="registerModal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Modal header</h3>
+  </div>
+  <div class="modal-body">
+    <form action="mailto:aklogbook@ecotrust.org?subject=Logbook Registration Request" method="post" enctype="text/plain" class="well">
+    	<table>
+    		<tr>
+    			<td>First name:</td>
+    			<td><input type="text" name="firstname"></td>
+    		</tr>
+    		<tr>
+    			<td>Last name:</td>
+    			<td><input type="text" name="lastname"></td>
+    		</tr>
+    		<tr>
+    			<td>Email:</td>
+    			<td><input type="text" name="email"></td>
+    		</tr>
+    		<tr>
+    			<td>Organization:</td>
+    			<td><input type="text" name="organization"></td>
+    		</tr>
+    		<tr>
+    			<td>Additional notes:</td>
+    			<td><textarea name="notes" rows="5" cols="50"></textarea></td>
+    		</tr>
+    	</table>
+    	<input type="submit" name="submit" value="submit">
+    </form>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Close</a>
+  </div>
 </div>
