@@ -426,52 +426,190 @@ COMMENT_KEY = 'awc/awc_comm'
 
 YUKON_WATER_SURVEY = "yukon_water"
 YUKON_FIELD_MAP = {
-    'site_id': "general/site_id",
-    'obs_name': "general/tech_name",
-    'date': "general/date",
-    'start_time': 'general/st_time',
-    'water_body': 'general/wtr_bdy',
-    'meter_type': 'general/meter',
-    'meter_id': 'general/meter_id',
-    'ph7_buffer': 'ph_calibration/ph7_buffer',
-    'ph7_buffer_temp': 'ph_calibration/ph7_buffer_tmp',
-    'ph10_buffer': 'ph_calibration/ph10_buffer',
-    'ph10_buffer_temp': 'ph_calibration/ph10_buffer_tmp',
-    'bar_pressure': 'do_calibration/bar_pressure',
-    'pressure_hg': 'do_calibration/us_note',
-    'pressure_kpa': 'do_calibration/ca_note',
-    'pct_do_saturation': 'do_calibration/do_reading_stat',
-    'do_reading': 'do_calibration/do_reading',
-    'conductivity_standard': 'con_calibration/con_standard',
-    'conductivity_reading': 'con_calibration/con_read',
-    'conductivity_soln_temp': 'con_calibration/con_temp',
-    'ph': 'field/ph',
-    'dissolved_o_pct': 'field/dssvld_o_perc',
-    'dissolved_oxygen': 'field/dssvld_o',
-    'conductivity': 'field/conduct',
-    'air_temp': 'field/air_temp',
-    'water_temp': 'field/wtr_temp',
-    'ice_thickness': 'field/ice',
-    'coordinates': 'field/gps_loc',
-    'include_oth_obs': 'field_cond/show_field',
-    'current_weather': 'field_cond/weather_current',
-    'weather_last_24hrs': 'field_cond/weather_24',
-    'sample_location': 'field_cond/sample_loc',
-    'flow_description': 'field_cond/flow_desc',
-    'water_clarity': 'field_cond/wtr_clrty',
-    'odor': 'field_cond/odor',
-    'odor_oth_description': 'field_cond/odor_other',
-    'river_other': 'field_cond/riv_other_info',
-    'river_change': 'field_cond/riv_change',
-    'river_height_2weeks': 'field_cond/riv_hght_2w',
-    'river_height_1year': 'field_cond/riv_height_lyear',
-    'weather_notes': 'field_cond/weather_note',
-    'wildlife_concern': 'field_cond/wildlife_concern',
-    'wildlife_note': 'field_cond/wildlife_note',
-    'contaminate_events': 'field_cond/contaminants1',
-    'other_site_req': 'field_cond/contaminants2',
-    'interesting_notes': 'field_cond/other_info1',
-    'sample_issues': 'field_cond/other_info2'
+    'site_id': {
+        'name':"general/site_id",
+        'label': "Site Name ID"
+    },
+    'obs_name':{
+        'name': "general/tech_name",
+        'label': "Technician(s)"
+    },
+    'date':{
+        'name': "general/date",
+        'label': "Date"
+    },
+    'start_time':{
+        'name': 'general/st_time',
+        'label': "Time (24 hrs)"
+    },
+    'water_body':{
+        'name': 'general/wtr_bdy',
+        'label': "Waterbody Name"
+    },
+    'meter_type':{
+        'name': 'general/meter',
+        'label': "Meter type"
+    },
+    'meter_id':{
+        'name': 'general/meter_id',
+        'label': "Meter ID #"
+    },
+    'ph7_buffer':{
+        'name': 'ph_calibration/ph7_buffer',
+        'label': "pH 7 Buffer Reading"
+    },
+    'ph7_buffer_temp':{
+        'name': 'ph_calibration/ph7_buffer_tmp',
+        'label': "pH 7 Buffer Temperature"
+    },
+    'ph10_buffer':{
+        'name': 'ph_calibration/ph10_buffer',
+        'label': "pH 10 Buffer Reading"
+    },
+    'ph10_buffer_temp':{
+        'name': 'ph_calibration/ph10_buffer_tmp',
+        'label': "pH 10 Buffer Temperature"
+    },
+    'bar_pressure':{
+        'name': 'do_calibration/bar_pressure',
+        'label': "Barometric Pressure"
+    },
+    'pressure_hg':{
+        'name': 'do_calibration/us_note',
+        'label': "air pressure in inHg"
+    },
+    'pressure_kpa':{
+        'name': 'do_calibration/ca_note',
+        'label': "air pressure in kPa"
+    },
+    'pct_do_saturation':{
+        'name': 'do_calibration/do_reading_sat',
+        'label': "DO Reading (%) Saturation"
+    },
+    'do_reading':{
+        'name': 'do_calibration/do_reading',
+        'label': "DO Reading"
+    },
+    'conductivity_standard':{
+        'name': 'con_calibration/con_standard',
+        'label': "Conductivity Standard Used"
+    },
+    'conductivity_reading':{
+        'name': 'con_calibration/con_read',
+        'label': "Conductivity Reading"
+    },
+    'conductivity_soln_temp':{
+        'name': 'con_calibration/con_temp',
+        'label': "Conductivity Solution Temperature"
+    },
+    'ph':{
+        'name': 'field/ph',
+        'label': "pH"
+    },
+    'dissolved_o_pct':{
+        'name': 'field/dssvld_o_perc',
+        'label': "Dissolved Oxygen (%)"
+    },
+    'dissolved_oxygen':{
+        'name': 'field/dssvld_o',
+        'label': "Dissolved Oxygen"
+    },
+    'conductivity':{
+        'name': 'field/conduct',
+        'label': "Conductivity"
+    },
+    'air_temp':{
+        'name': 'field/air_temp',
+        'label': "Air Temperature"
+    },
+    'water_temp':{
+        'name': 'field/wtr_temp',
+        'label': "Water Temperature"
+    },
+    'ice_thickness':{
+        'name': 'field/ice',
+        'label': "Ice Thickness"
+    },
+    'coordinates':{
+        'name': 'field/gps_loc',
+        'label': "Location"
+    },
+    'include_oth_obs':{
+        'name': 'field_cond/show_field',
+        'label': "Would like to include other observations about weather and river conditions?"
+    },
+    'current_weather':{
+        'name': 'field_cond/weather_current',
+        'label': "Current weather"
+    },
+    'weather_last_24hrs':{
+        'name': 'field_cond/weather_24',
+        'label': "Weather in the last 24 hours"
+    },
+    'sample_location':{
+        'name': 'field_cond/sample_loc',
+        'label': "Sample Location"
+    },
+    'flow_description':{
+        'name': 'field_cond/flow_desc',
+        'label': "Flow Description"
+    },
+    'water_clarity':{
+        'name': 'field_cond/wtr_clrty',
+        'label': "Water Clarity"
+    },
+    'odor':{
+        'name': 'field_cond/odor',
+        'label': "Site Odor"
+    },
+    'odor_oth_description':{
+        'name': 'field_cond/odor_other',
+        'label': "describe other"
+    },
+    'river_other':{
+        'name': 'field_cond/riv_other_info',
+        'label': "Other information"
+    },
+    'river_change':{
+        'name': 'field_cond/riv_change',
+        'label': "Changes with the river since last sample"
+    },
+    'river_height_2weeks':{
+        'name': 'field_cond/riv_hght_2w',
+        'label': "How does the river height compare to two weeks ago?"
+    },
+    'river_height_1year':{
+        'name': 'field_cond/riv_height_lyear',
+        'label': "How does the river height compare to this time last year?"
+    },
+    'weather_notes':{
+        'name': 'field_cond/weather_note',
+        'label': "Anything noteworthy happening with the weather?"
+    },
+    'wildlife_concern':{
+        'name': 'field_cond/wildlife_concern',
+        'label': "Any specific concerns about wildlife?"
+    },
+    'wildlife_note':{
+        'name': 'field_cond/wildlife_note',
+        'label': "Any noteworthy wildlife or fish species traveling through your community or nearby?"
+    },
+    'contaminate_events':{
+        'name': 'field_cond/contaminants1',
+        'label': "Has anything occurred since the last sampling that might have affected the water quality at your site?"
+    },
+    'other_site_req':{
+        'name': 'field_cond/contaminants2',
+        'label': "Is there any other site that your community wants monitored? Please describe:"
+    },
+    'interesting_notes':{
+        'name': 'field_cond/other_info1',
+        'label': "Anything else interesting? Please write your comments or observations"
+    },
+    'sample_issues':{
+        'name': 'field_cond/other_info2',
+        'label': "Are there any issues with this sample that we should know about?"
+    }
 }
 
 YUKON_IGNORED_OUTPUT_FIELDS = []

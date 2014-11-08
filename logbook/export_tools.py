@@ -79,10 +79,10 @@ def get_obs_data(pi, survey):
                 data['lng'] = float(val_lst[1])
 
     elif survey == 'yukon':
-        for key in settings.YUKON_FIELD_MAP.keys():
-            data[key] = pi.to_dict().get(settings.YUKON_FIELD_MAP[key], '')
-
         pi_dict = pi.to_dict()
+        for key in settings.YUKON_FIELD_MAP.keys():
+            data[key] = pi_dict.get(settings.YUKON_FIELD_MAP[key]['name'], '')
+
         for key in sorted(pi_dict.keys()):
             if key == settings.YUKON_LOCATION_KEY:
                 val = pi_dict[key]
@@ -327,9 +327,9 @@ def generate_frp_xls(id_string, biol_date, user, permit_nums):
     return final
 
 
-def generate_yukon_xls(id_string, req_date, user, site_nums):
+def generate_yukon_xls(id_string, user, site_nums):
     from odk_viewer.models import ParsedInstance
-    import xlrd
+    import xlrd, datetime
     from xlutils.copy import copy
 
     all_instances = ParsedInstance.objects.filter(instance__user=user,
@@ -341,21 +341,13 @@ def generate_yukon_xls(id_string, req_date, user, site_nums):
         raise Exception("Only one site id per Yukon water survey export")
 
     pis = [x for x in all_instances 
-        if x.to_dict()[settings.YUKON_FIELD_MAP['site_id']] in site_nums
+        if x.to_dict()[settings.YUKON_FIELD_MAP['site_id']['name']] in site_nums
     ]
 
     if len(pis) == 0:
         raise Http404
 
     obs_data = [ get_obs_data(pi, 'yukon') for pi in pis ]
-
-    pts = [(x['lng'], x['lat']) for x in obs_data]
-
-    meta = {
-        'request_date': req_date
-    }
-
-    meta = extend_meta_profile(meta, user)
 
     content = StringIO.StringIO()
 
@@ -370,14 +362,65 @@ def generate_yukon_xls(id_string, req_date, user, site_nums):
     ws.write(0, 0, "Site ID: %s" % obs_data[0]['site_id'])
 
     # Documentations showed some degree of finickiness with date formats. The preferred format is now enforced.
-    request_date = meta['request_date'].split('-')
-    ws.write(2, 0, "This data was requested on: %s/%s/%s" % (request_date[1], request_date[2], request_date[0]))
+    request_date = datetime.datetime.now().date().today().isoformat().split('-')
+    date_line_string = "This data was requested on: %s/%s/%s" % (request_date[1], request_date[2], request_date[0])
+    ws.write(2, 0, date_line_string)
+
+    # header_row = 3
+    # ws.write(header_row,0,'Date')
+    # ws.write(header_row,1,'Time (24 hrs)')
+    # ws.write(header_row,2,'Site Name ID')
+    # ws.write(header_row,3,'Waterbody Name')
+    # ws.write(header_row,4,'Technician(s)')
+    # ws.write(header_row,5,'Meter type')
+    # ws.write(header_row,6,'Meter ID #')
+    # ws.write(header_row,7,'pH 7 Buffer Reading')
+    # ws.write(header_row,8,'pH 7 Buffer Temperature')
+    # ws.write(header_row,9,'pH 10 Buffer Reading')
+    # ws.write(header_row,10,'pH 10 Buffer Temperature')
+    # ws.write(header_row,11,'Barometric Pressure')
+    # ws.write(header_row,12,'DO Reading (%) Saturation')
+    # ws.write(header_row,13,'DO Reading')
+    # ws.write(header_row,14,'Conductivity Standard Used')
+    # ws.write(header_row,15,'Conductivity Reading')
+    # ws.write(header_row,16,'Conductivity Solution Temperature')
+    # ws.write(header_row,17,'pH')
+    # ws.write(header_row,18,'Dissolved Oxygen (%)')
+    # ws.write(header_row,19,'Dissolved Oxygen')
+    # ws.write(header_row,20,'Conductivity')
+    # ws.write(header_row,21,'Air Temperature')
+    # ws.write(header_row,22,'Water Temperature')
+    # ws.write(header_row,23,'Ice Thickness')
+    # ws.write(header_row,24,'Location')
+
     for i, obs in enumerate(obs_data):
-        for j, header in enumerate(settings.YUKON_FIELD_MAP.keys()):
-            if i == 0:
-                ws.write(3,j,header)
-            ws.write(start_row_idx+i,j,obs[header])
-        
+        date_split = obs['date'].split('-')
+        ws.write(start_row_idx+i,0,date_split[1] + "/" + date_split[2] + "/" + date_split[0])
+        ws.write(start_row_idx+i,1,obs['start_time'])
+        ws.write(start_row_idx+i,2,obs['site_id'])
+        ws.write(start_row_idx+i,3,obs["water_body"])
+        ws.write(start_row_idx+i,4,obs["obs_name"])
+        ws.write(start_row_idx+i,5,obs['meter_type'])
+        ws.write(start_row_idx+i,6,obs['meter_id'])
+        ws.write(start_row_idx+i,7,obs['ph7_buffer'])
+        ws.write(start_row_idx+i,8,obs['ph7_buffer_temp'])
+        ws.write(start_row_idx+i,9,obs['ph10_buffer'])
+        ws.write(start_row_idx+i,10,obs['ph10_buffer_temp'])
+        ws.write(start_row_idx+i,11,obs['bar_pressure'])
+        ws.write(start_row_idx+i,12,obs['pct_do_saturation'])
+        ws.write(start_row_idx+i,13,obs['do_reading'])
+        ws.write(start_row_idx+i,14,obs['conductivity_standard'])
+        ws.write(start_row_idx+i,15,obs['conductivity_reading'])
+        ws.write(start_row_idx+i,16,obs['conductivity_soln_temp'])
+        ws.write(start_row_idx+i,17,obs['ph'])
+        ws.write(start_row_idx+i,18,obs['dissolved_o_pct'])
+        ws.write(start_row_idx+i,19,obs['dissolved_oxygen'])
+        ws.write(start_row_idx+i,20,obs['conductivity'])
+        ws.write(start_row_idx+i,21,obs['air_temp'])
+        ws.write(start_row_idx+i,22,obs['water_temp'])
+        ws.write(start_row_idx+i,23,obs['ice_thickness'])
+        ws.write(start_row_idx+i,24,obs['coordinates'])
+            
     wb.save(content)
 
     final = content.getvalue() 

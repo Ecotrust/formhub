@@ -64,12 +64,10 @@ def yukon_xls_export(request, username, id_string):
         return HttpResponseForbidden(_(u'Not shared.'))
 
     site_nums = request.GET.getlist('site')
-    req_date = request.GET.get('dlRequestDate', '')
     if len(site_nums) != 1:
         return HttpResponseBadRequest("Must provide a single site id")
 
-    xls = generate_yukon_xls(id_string, req_date,
-        user=owner, site_nums=site_nums)
+    xls = generate_yukon_xls(id_string, user=owner, site_nums=site_nums)
     response = HttpResponse(xls, mimetype="application/vnd.ms-excel")
     response['Content-Disposition'] = disposition_ext_and_date(
         '-'.join(site_nums), 'xls')
