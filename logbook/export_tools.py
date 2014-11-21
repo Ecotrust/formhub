@@ -341,7 +341,7 @@ def generate_yukon_xls(id_string, user, site_nums):
         raise Exception("Only one site id per Yukon water survey export")
 
     pis = [x for x in all_instances 
-        if x.to_dict()[settings.YUKON_FIELD_MAP['site_id']['name']] in site_nums
+        if x.to_dict().has_key(settings.YUKON_FIELD_MAP['site_id']['name']) and x.to_dict()[settings.YUKON_FIELD_MAP['site_id']['name']] in site_nums
     ]
 
     if len(pis) == 0:
@@ -395,7 +395,10 @@ def generate_yukon_xls(id_string, user, site_nums):
 
     for i, obs in enumerate(obs_data):
         date_split = obs['date'].split('-')
-        ws.write(start_row_idx+i,0,date_split[1] + "/" + date_split[2] + "/" + date_split[0])
+        if len(date_split) >= 3:
+            ws.write(start_row_idx+i,0,date_split[1] + "/" + date_split[2] + "/" + date_split[0])
+        else:
+            ws.write(start_row_idx+i,0,'None')
         ws.write(start_row_idx+i,1,obs['start_time'])
         ws.write(start_row_idx+i,2,obs['site_id'])
         ws.write(start_row_idx+i,3,obs["water_body"])
